@@ -23,7 +23,7 @@ For example:
        "Host": "http://localhost:8082"
     },
     {
-       "Path": "/store",
+       "Path": "/",
        "Host": "http://localhost:8000"
     }
 ]

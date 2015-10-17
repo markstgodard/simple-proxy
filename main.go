@@ -17,8 +17,9 @@ const (
 
 type Routes []Route
 type Route struct {
-	Path string
-	Host string
+	Path        string
+	Host        string
+	StripPrefix bool
 }
 
 func loadConfig() (Routes, error) {
@@ -46,12 +47,24 @@ func main() {
 	}
 
 	for _, r := range routes {
-		fmt.Printf("mapping path [%s] to host [%s]\n", r.Path, r.Host)
+		// fmt.Printf("mapping path [%s] to host [%s]\n", r.Path, r.Host)
 		target, err := url.Parse(r.Host)
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.Handle(r.Path+"/", httputil.NewSingleHostReverseProxy(target))
+
+		path := r.Path
+		if path != "/" {
+			path = path + "/"
+		}
+
+		if r.StripPrefix {
+			fmt.Printf("(strip) mapping %s to %s\n", path, target)
+			http.Handle(path, http.StripPrefix(path, httputil.NewSingleHostReverseProxy(target)))
+		} else {
+			fmt.Printf("mapping %s to %s\n", path, target)
+			http.Handle(path, httputil.NewSingleHostReverseProxy(target))
+		}
 	}
 
 	log.Fatal(http.ListenAndServe(":"+port, nil))
