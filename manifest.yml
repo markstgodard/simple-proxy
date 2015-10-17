@@ -1,0 +1,9 @@
+---
+applications:
+- name: store-proxy
+  memory: 256M
+  host: stuff-store-proxy
+  timeout: 180
+  buildpack: go_buildpack
+  env:
+    ROUTES: "[ { \"Path\": \"/products\", \"Host\": \"https://stuff-products.mybluemix.net\" }, { \"Path\": \"/cart\", \"Host\": \"https://stuff-cart.mybluemix.net\" }, { \"Path\": \"/orders\", \"Host\": \"https://stuff-orders.mybluemix.net\" }, { \"Path\": \"/\", \"Host\": \"https://stuff-store.mybluemix.net\" } ]"
